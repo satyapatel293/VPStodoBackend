@@ -1,0 +1,35 @@
+### get all 
+GET http://localhost:3000/api/todos
+
+### get one 
+GET http://localhost:3000/api/todos/1
+
+
+### save new 
+POST http://localhost:3000/api/todos
+Content-Type: application/json
+
+{
+  "title": "Test 3",
+  "day": "02",
+  "month": "03",
+  "year": "2018",
+  "description": "this is a also a test"
+}
+
+### update todo change id to correct
+PUT http://localhost:3000/api/todos/6
+Content-Type: application/json
+
+{
+  "title": "Test 3",
+  "completed": true,
+  "day": "02",
+  "month": "03",
+  "year": "2018",
+  "description": "this is a also a test"
+}
+
+
+### delete a todo
+DELETE http://localhost:3000/api/todos/9
