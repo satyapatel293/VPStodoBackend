@@ -1,10 +1,12 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const { Pool } = require('pg');
 
 const app = express();
 const port = process.env.PORT || 3000;
+const mongoURI = 'mongodb://localhost:27017/Todos';
 
 // Middleware to parse JSON bodies
 app.use(cors());
@@ -23,6 +25,25 @@ function extractTodoObject(requestBody) {
 
   return todo;
 }
+
+// Connect to Mongo
+mongoose.connect(mongoURI);
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Connection error:'));
+db.once('open', () => {
+  console.log('Successfully connected to MongoDB');
+});
+
+
+const todoCountSchema = new mongoose.Schema({
+  counter: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+});
+
+const TodoCount = mongoose.model('todoCount', todoCountSchema);
 
 
 // Configure PostgreSQL connection pool
@@ -148,7 +169,79 @@ app.delete('/api/todos/:id', async (req, res) => {
 });
 
 
+app.put('/api/counter/increment', async (req, res) => {
+  try {
+    const updatedDoc = await TodoCount.findOneAndUpdate(
+      {}, // Filter: update the first document found
+      { $inc: { counter: 1 } }, // Update: increment counter by 1
+      { new: true } // Options: return the updated document
+    );
+
+    if (updatedDoc) {
+      res.json(updatedDoc);
+      console.log('Counter incremented:', updatedDoc);
+    } else {
+      console.log('No document found to update.');
+    }
+  } catch (error) {
+    console.error('Error incrementing counter:', error);
+  }
+});
+
+
+app.put('/api/counter/decrement', async (req, res) => {
+  try {
+    const updatedDoc = await TodoCount.findOneAndUpdate(
+      {}, // Filter: update the first document found
+      { $inc: { counter: -1 } }, // Update: increment counter by 1
+      { new: true } // Options: return the updated document
+    );
+
+    if (updatedDoc) {
+      res.json(updatedDoc);
+      console.log('Counter incremented:', updatedDoc);
+    } else {
+      console.log('No document found to update.');
+    }
+  } catch (error) {
+    console.error('Error incrementing counter:', error);
+  }
+});
+
+
+app.put('/api/counter/reset', async (req, res) => {
+  try {
+    const updatedDoc = await TodoCount.findOneAndUpdate(
+      {}, // Filter: update the first document found
+      { counter: 0}, // Update: increment counter by 1
+      { new: true } // Options: return the updated document
+    );
+
+    if (updatedDoc) {
+      res.json(updatedDoc);
+      console.log('Counter incremented:', updatedDoc);
+    } else {
+      console.log('No document found to update.');
+    }
+  } catch (error) {
+    console.error('Error incrementing counter:', error);
+  }
+});
+
+app.get('/api/counter', async (req, res) => {
+  TodoCount.find()
+    .then(docs => {
+      res.json(docs[0]);
+    })
+    .catch(err => {
+      console.error('Error fetching documents:', err);
+    });
+});
+
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+

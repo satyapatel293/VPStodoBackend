@@ -33,3 +33,19 @@ Content-Type: application/json
 
 ### delete a todo
 DELETE http://localhost:3000/api/todos/9
+
+
+### reset counter
+PUT http://localhost:3000/api/counter/reset
+
+
+### increment counter
+PUT http://localhost:3000/api/counter/increment
+
+
+### decrement counter
+PUT http://localhost:3000/api/counter/decrement
+
+
+### get counter
+GET http://localhost:3000/api/counter

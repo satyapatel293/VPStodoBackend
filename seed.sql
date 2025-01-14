@@ -1,3 +1,4 @@
+
 INSERT INTO todos (title, day, month, year, description, completed) VALUES
 ('Buy Groceries', '10', '09', '2024', 'Milk, Bread, Eggs, Butter', FALSE),
 ('Doctor Appointment', '15', '09', '2024', 'Annual check-up at 10 AM', FALSE),
